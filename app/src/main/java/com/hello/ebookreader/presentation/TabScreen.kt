@@ -4,10 +4,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -26,49 +24,32 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showSystemUi = true)
 @Composable
-fun TabLayout() {
+fun TabLayout(navController: NavController) {
     var pagerState = rememberPagerState(pageCount = { 2 })
     Column {
         Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState)
+        TabsContent(pagerState = pagerState, navController = navController)
     }
 }
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TabsContent(pagerState: PagerState) {
+fun TabsContent(pagerState: PagerState, navController: NavController) {
     VerticalPager(state = pagerState) {
         when (it) {
-            0 -> BookScreen()
-            1 -> CategoryScreen()
+            0 -> AllBooksScreen(navController = navController)
+            1 -> CategoryScreen(navController = navController)
         }
     }
 }
 
-@Composable
-fun CategoryScreen() {
-    LazyColumn {
-        items(10){
-            Text(text = "Category $it")
-            Spacer(modifier = Modifier.height(5.dp))
-        }
-    }
-}
-@Composable
-fun BookScreen() {
-    LazyColumn {
-        items(10){
-            Text(text = "Book $it")
-            Spacer(modifier = Modifier.height(5.dp))
-        }
-    }
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
+import com.hello.ebookreader.presentation.navigation.NavGraphHost
 import com.hello.ebookreader.ui.theme.EBookReaderTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,10 +20,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             EBookReaderTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Surface (modifier = Modifier.padding(innerPadding)){
-                        AllBooksScreen()
+                        NavGraphHost(navController = navController)
                     }
                 }
             }

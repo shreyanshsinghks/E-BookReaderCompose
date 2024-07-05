@@ -1,8 +1,6 @@
 package com.hello.ebookreader.presentation
 
-import android.util.Log
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +13,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,8 +24,23 @@ import androidx.navigation.NavController
 import com.hello.ebookreader.presentation.viewmodel.ViewModel
 
 @Composable
-fun AllBooksScreen(viewModel: ViewModel = hiltViewModel(), navController: NavController) {
+fun BooksByCategory(
+    category: String,
+    viewModel: ViewModel = hiltViewModel(),
+    navController: NavController
+) {
+    val realCategory = remember {
+        mutableStateOf(category)
+    }
+//    LaunchedEffect(realCategory) {
+//        viewModel.loadBooksByCategory(realCategory.value)
+//    }
     val res = viewModel.state.value
+    DisposableEffect(category) {
+        viewModel.loadBooksByCategory(category)
+        onDispose {
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         when {
@@ -33,7 +49,6 @@ fun AllBooksScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
-
             res.error.isNotEmpty() -> {
                 Text(
                     text = res.error,
@@ -41,9 +56,10 @@ fun AllBooksScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
                 )
             }
 
-            res.items.isNotEmpty() -> {
+            res.categoryItems.isNotEmpty() -> {
+
                 LazyColumn {
-                    items(res.items) {
+                    items(res.categoryItems) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()

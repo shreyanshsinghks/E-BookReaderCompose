@@ -7,5 +7,7 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.jetbrains.kotlin.plugin.compose) apply false
     alias(libs.plugins.google.gms.google.services) apply false
+    alias(libs.plugins.jetbrains.kotlin.serialization) apply false
+
 
 }
