@@ -15,7 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,11 +23,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -45,7 +44,6 @@ import com.hello.ebookreader.common.BookModel
 import com.hello.ebookreader.presentation.navigation.NavigationItem
 import com.hello.ebookreader.presentation.viewmodel.ViewModel
 import com.hello.ebookreader.ui.theme.BackgroundColor
-import com.hello.ebookreader.ui.theme.ErrorColor
 import com.hello.ebookreader.ui.theme.OnPrimaryColor
 import com.hello.ebookreader.ui.theme.PrimaryColor
 import com.hello.ebookreader.ui.theme.SurfaceColor
@@ -71,10 +69,14 @@ fun BooksByCategory(
                 title = { Text(text = category, color = OnPrimaryColor) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = OnPrimaryColor)
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = OnPrimaryColor
+                        )
                     }
                 },
-                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = PrimaryColor)
+                colors = topAppBarColors(containerColor = PrimaryColor)
             )
         }
     ) { paddingValues ->
@@ -86,8 +88,11 @@ fun BooksByCategory(
         ) {
             when {
                 res.isLoading -> LoadingIndicator()
-                res.error.isNotEmpty() -> res.error
-                res.categoryItems.isNotEmpty() -> BookListCategory(bookModels = res.categoryItems, navController = navController)
+                res.error.isNotEmpty() -> Text(text = res.error)
+                res.categoryItems.isNotEmpty() -> BookListCategory(
+                    bookModels = res.categoryItems,
+                    navController = navController
+                )
             }
         }
     }
@@ -101,7 +106,12 @@ fun BookListCategory(bookModels: List<BookModel>, navController: NavController) 
     ) {
         items(bookModels) { book ->
             BookItem(bookModel = book) {
-                navController.navigate(NavigationItem.ShowPdfScreen(url = book.bookUrl, bookName = book.bookName))
+                navController.navigate(
+                    NavigationItem.ShowPdfScreen(
+                        url = book.bookUrl,
+                        bookName = book.bookName
+                    )
+                )
             }
         }
     }
@@ -124,7 +134,8 @@ fun BookItem(bookModel: BookModel, onBookClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AsyncImage(
-                model = "https://m.media-amazon.com/images/I/31RW8HQ31WL._SY445_SX342_.jpg" ?: Icons.Default.Book,
+                model = "https://m.media-amazon.com/images/I/31RW8HQ31WL._SY445_SX342_.jpg"
+                    ?: Icons.Default.Book,
                 contentDescription = "Book cover",
                 modifier = Modifier
                     .size(80.dp)
@@ -163,31 +174,6 @@ fun LoadingIndicator() {
     }
 }
 
-@Composable
-fun ErrorMessage(message: String) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = message,
-            color = ErrorColor,
-            style = MaterialTheme.typography.bodyLarge
-        )
-    }
-}
 
-@Composable
-fun EmptyStateMessage() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "No books available in this category",
-            style = MaterialTheme.typography.bodyLarge,
-            color = TextSecondaryColor
-        )
-    }
-}
+
 

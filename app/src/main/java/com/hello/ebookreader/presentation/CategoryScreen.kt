@@ -16,7 +16,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -65,7 +65,7 @@ fun CategoryScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
 @Composable
 fun CategoryGrid(categories: List<BookCategoryModel>, navController: NavController) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 150.dp),
+        columns = GridCells.Adaptive(minSize = 160.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -91,12 +91,12 @@ fun CategoryItem(category: BookCategoryModel, onClick: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(10.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                imageVector = Icons.Default.MenuBook,
+                imageVector = Icons.AutoMirrored.Filled.MenuBook,
                 contentDescription = null,
                 tint = PrimaryColor,
                 modifier = Modifier.size(48.dp)

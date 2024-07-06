@@ -1,15 +1,31 @@
 package com.hello.ebookreader.presentation
 
-import androidx.compose.animation.*
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Book
 import androidx.compose.material.icons.rounded.Category
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -24,7 +40,6 @@ import com.hello.ebookreader.ui.theme.SurfaceColor
 import com.hello.ebookreader.ui.theme.TextSecondaryColor
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun TabScreen(navController: NavController) {
     val pagerState = rememberPagerState(pageCount = { 2 })
@@ -42,8 +57,8 @@ fun TabScreen(navController: NavController) {
             AnimatedContent(
                 targetState = page,
                 transitionSpec = {
-                    fadeIn() + slideInHorizontally() with fadeOut() + slideOutHorizontally()
-                }
+                    (fadeIn() + slideInHorizontally()).togetherWith(fadeOut() + slideOutHorizontally())
+                }, label = ""
             ) { targetPage ->
                 when (targetPage) {
                     0 -> AllBooksScreen(navController = navController)
@@ -54,7 +69,6 @@ fun TabScreen(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Tabs(pagerState: PagerState) {
     val coroutineScope = rememberCoroutineScope()
