@@ -3,14 +3,23 @@ package com.hello.ebookreader.presentation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,13 +43,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hello.ebookreader.ui.theme.AccentColor1
+import com.hello.ebookreader.ui.theme.BackgroundColor
 import com.hello.ebookreader.ui.theme.NightModeBackground
 import com.hello.ebookreader.ui.theme.NightModeText
 import com.hello.ebookreader.ui.theme.OnPrimaryColor
 import com.hello.ebookreader.ui.theme.PrimaryColor
+import com.hello.ebookreader.ui.theme.TextPrimaryColor
 import com.rizzi.bouquet.ResourceType
 import com.rizzi.bouquet.VerticalPDFReader
 import com.rizzi.bouquet.rememberVerticalPdfReaderState
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,13 +62,14 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
         isZoomEnable = true,
     )
     var showControls by remember { mutableStateOf(true) }
+    var isNightMode by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             AnimatedVisibility(
                 visible = showControls,
-                enter = fadeIn(),
-                exit = fadeOut()
+                enter = fadeIn() + slideInVertically(),
+                exit = fadeOut() + slideOutVertically()
             ) {
                 TopAppBar(
                     title = {
@@ -72,6 +85,15 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = OnPrimaryColor)
                         }
                     },
+                    actions = {
+                        IconButton(onClick = { isNightMode = !isNightMode }) {
+                            Icon(
+                                if (isNightMode) Icons.Default.LightMode else Icons.Default.DarkMode,
+                                contentDescription = "Toggle Night Mode",
+                                tint = OnPrimaryColor
+                            )
+                        }
+                    },
                     colors = topAppBarColors(containerColor = PrimaryColor)
                 )
             }
@@ -81,7 +103,7 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(NightModeBackground)
+                .background(if (isNightMode) NightModeBackground else BackgroundColor)
         ) {
             VerticalPDFReader(
                 state = pdfState,
@@ -98,20 +120,52 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
                 }
             }
 
-            // Page number indicator
+            // Page number indicator and controls
             AnimatedVisibility(
                 visible = showControls,
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
+                exit = fadeOut() + slideOutVertically(targetOffsetY = { it }),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 16.dp)
             ) {
-                Text(
-                    text = "Page ${pdfState.currentPage + 1} of ${pdfState.pdfPageCount}",
-                    color = NightModeText,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = {
+
+                        },
+                        enabled = pdfState.currentPage > 0
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                            contentDescription = "Previous Page",
+                            tint = if (isNightMode) NightModeText else TextPrimaryColor
+                        )
+                    }
+                    Text(
+                        text = "Page ${pdfState.currentPage + 1} of ${pdfState.pdfPageCount}",
+                        color = if (isNightMode) NightModeText else TextPrimaryColor,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    IconButton(
+                        onClick = {
+
+                        },
+                        enabled = pdfState.currentPage < pdfState.pdfPageCount - 1
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = "Next Page",
+                            tint = if (isNightMode) NightModeText else TextPrimaryColor
+                        )
+                    }
+                }
             }
 
             // Progress indicator
@@ -130,7 +184,7 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
     // Toggle controls visibility on tap
     LaunchedEffect(pdfState.currentPage) {
         showControls = true
-        kotlinx.coroutines.delay(3000)
+        delay(3000)
         showControls = false
     }
 }
