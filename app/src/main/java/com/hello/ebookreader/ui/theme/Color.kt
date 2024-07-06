@@ -1,54 +1,46 @@
 package com.hello.ebookreader.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+object LightColors {
+    val PrimaryColor = Color(0xFF1E88E5)
+    val OnPrimaryColor = Color(0xFFFFFFFF)
+    val SecondaryColor = Color(0xFFFF6E40)
+    val BackgroundColor = Color(0xFFF5F5F5)
+    val SurfaceColor = Color(0xFFFFFFFF)
+    val TextPrimaryColor = Color(0xFF212121)
+    val TextSecondaryColor = Color(0xFF757575)
+    val AccentColor1 = Color(0xFF00C853)
+    val ErrorColor = Color(0xFFD50000)
+}
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+object DarkColors {
+    val PrimaryColor = Color(0xFF3F51B5)
+    val OnPrimaryColor = Color(0xFFFFFFFF)
+    val SecondaryColor = Color(0xFFFF4081)
+    val BackgroundColor = Color(0xFF121212)
+    val SurfaceColor = Color(0xFF1E1E1E)
+    val TextPrimaryColor = Color(0xFFFFFFFF)
+    val TextSecondaryColor = Color(0xFFB0B0B0)
+    val AccentColor1 = Color(0xFF00BFA5)
+    val ErrorColor = Color(0xFFFF5252)
+}
 
+object AppColors {
+    val PrimaryColor @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) DarkColors.PrimaryColor else LightColors.PrimaryColor
+    val OnPrimaryColor @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) DarkColors.OnPrimaryColor else LightColors.OnPrimaryColor
+    val SecondaryColor @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) DarkColors.SecondaryColor else LightColors.SecondaryColor
+    val BackgroundColor @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) DarkColors.BackgroundColor else LightColors.BackgroundColor
+    val SurfaceColor @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) DarkColors.SurfaceColor else LightColors.SurfaceColor
+    val TextPrimaryColor @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) DarkColors.TextPrimaryColor else LightColors.TextPrimaryColor
+    val TextSecondaryColor @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) DarkColors.TextSecondaryColor else LightColors.TextSecondaryColor
+    val AccentColor1 @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) DarkColors.AccentColor1 else LightColors.AccentColor1
+    val ErrorColor @Composable @ReadOnlyComposable get() = if (isSystemInDarkTheme()) DarkColors.ErrorColor else LightColors.ErrorColor
+}
 
-// Primary colors
-// Primary colors
-val PrimaryColor = Color(0xFF1E88E5)  // A refined blue
-val PrimaryVariant = Color(0xFF1565C0)  // A deeper blue
-val OnPrimaryColor = Color(0xFFFFFFFF)  // White text on primary colors
-
-// Secondary colors
-val SecondaryColor = Color(0xFFFF6E40)  // A vibrant orange
-val SecondaryVariant = Color(0xFFFF3D00)  // A deeper orange
-val OnSecondaryColor = Color(0xFF000000)  // Black text on secondary colors
-
-// Background colors
-val BackgroundColor = Color(0xFFF5F5F5)  // A light gray
-val SurfaceColor = Color(0xFFFFFFFF)  // Pure white
-val OnBackgroundColor = Color(0xFF212121)  // Dark gray for text on background
-
-// Text colors
-val TextPrimaryColor = Color(0xFF212121)  // Dark gray for primary text
-val TextSecondaryColor = Color(0xFF757575)  // Medium gray for secondary text
-
-// Accent colors
-val AccentColor1 = Color(0xFF00C853)  // A vibrant green
-val AccentColor2 = Color(0xFFFF4081)  // A vibrant pink
-val AccentColor3 = Color(0xFF651FFF)  // A deep purple
-
-// Status colors
-val SuccessColor = Color(0xFF00C853)  // Green for success states
-val ErrorColor = Color(0xFFD50000)  // Red for error states
-val WarningColor = Color(0xFFFFAB00)  // Amber for warning states
-
-// Reading mode colors
-val NightModeBackground = Color(0xFF121212)  // Dark background for night mode
-val NightModeText = Color(0xFFE0E0E0)  // Light gray text for night mode
-
-// Gradient colors
-val GradientStart = Color(0xFF1E88E5)
-val GradientEnd = Color(0xFF651FFF)
-
-// Overlay colors
-val OverlayLight = Color(0x80FFFFFF)  // Semi-transparent white
-val OverlayDark = Color(0x80000000)  // Semi-transparent black
+// Night mode colors remain the same as they are specific to the reading mode
+val NightModeBackground = Color(0xFF121212)
+val NightModeText = Color(0xFFE0E0E0)

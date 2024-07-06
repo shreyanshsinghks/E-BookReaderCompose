@@ -40,11 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.hello.ebookreader.ui.theme.BackgroundColor
-import com.hello.ebookreader.ui.theme.PrimaryColor
-import com.hello.ebookreader.ui.theme.SecondaryColor
-import com.hello.ebookreader.ui.theme.SurfaceColor
-import com.hello.ebookreader.ui.theme.TextSecondaryColor
+import com.hello.ebookreader.ui.theme.AppColors
 import kotlinx.coroutines.launch
 
 @Composable
@@ -54,7 +50,7 @@ fun TabScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundColor)
+            .background(AppColors.BackgroundColor)
     ) {
         Tabs(pagerState = pagerState)
         HorizontalPager(
@@ -87,8 +83,8 @@ fun Tabs(pagerState: PagerState) {
 
     TabRow(
         selectedTabIndex = pagerState.currentPage,
-        containerColor = SurfaceColor,
-        contentColor = PrimaryColor,
+        containerColor = AppColors.SurfaceColor,
+        contentColor = AppColors.PrimaryColor,
         modifier = Modifier
             .padding(16.dp)
             .clip(RoundedCornerShape(16.dp))
@@ -99,7 +95,7 @@ fun Tabs(pagerState: PagerState) {
                     .tabIndicatorOffset(tabPositions[pagerState.currentPage])
                     .clip(RoundedCornerShape(16.dp)),
                 height = 3.dp,
-                color = SecondaryColor
+                color = AppColors.SecondaryColor
             )
         }
     ) {
@@ -130,7 +126,7 @@ fun TabContent(tabItem: TabItem, selected: Boolean) {
         Icon(
             imageVector = tabItem.icon,
             contentDescription = tabItem.title,
-            tint = if (selected) PrimaryColor else TextSecondaryColor,
+            tint = if (selected) AppColors.PrimaryColor else AppColors.TextSecondaryColor,
             modifier = Modifier.size(24.dp)
         )
         AnimatedVisibility(
@@ -140,7 +136,7 @@ fun TabContent(tabItem: TabItem, selected: Boolean) {
         ) {
             Text(
                 text = tabItem.title,
-                color = if (selected) PrimaryColor else TextSecondaryColor,
+                color = if (selected) AppColors.PrimaryColor else AppColors.TextSecondaryColor,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )

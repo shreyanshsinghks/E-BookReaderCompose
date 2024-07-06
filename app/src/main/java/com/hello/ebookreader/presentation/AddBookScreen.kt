@@ -33,9 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hello.ebookreader.presentation.viewmodel.ViewModel
-import com.hello.ebookreader.ui.theme.ErrorColor
-import com.hello.ebookreader.ui.theme.OnPrimaryColor
-import com.hello.ebookreader.ui.theme.PrimaryColor
+import com.hello.ebookreader.ui.theme.AppColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,13 +49,13 @@ fun AddBookScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCont
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add New Book", color = OnPrimaryColor) },
+                title = { Text("Add New Book", color = AppColors.OnPrimaryColor) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = OnPrimaryColor)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = AppColors.OnPrimaryColor)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = PrimaryColor)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.PrimaryColor)
             )
         }
     ) { paddingValues ->
@@ -132,14 +130,14 @@ fun AddBookScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCont
             if (state.isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    color = PrimaryColor
+                    color = AppColors.PrimaryColor
                 )
             }
 
             if (state.error.isNotEmpty()) {
                 Text(
                     text = state.error,
-                    color = ErrorColor,
+                    color = AppColors.ErrorColor,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }

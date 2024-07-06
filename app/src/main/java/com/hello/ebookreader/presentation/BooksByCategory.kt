@@ -1,12 +1,9 @@
 package com.hello.ebookreader.presentation
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.foundation.ExperimentalFoundationApi
+import ShimmerLoading
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,12 +13,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
@@ -37,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,13 +56,7 @@ import coil.compose.AsyncImage
 import com.hello.ebookreader.common.BookModel
 import com.hello.ebookreader.presentation.navigation.NavigationItem
 import com.hello.ebookreader.presentation.viewmodel.ViewModel
-import com.hello.ebookreader.ui.theme.AccentColor1
-import com.hello.ebookreader.ui.theme.BackgroundColor
-import com.hello.ebookreader.ui.theme.OnPrimaryColor
-import com.hello.ebookreader.ui.theme.PrimaryColor
-import com.hello.ebookreader.ui.theme.SurfaceColor
-import com.hello.ebookreader.ui.theme.TextPrimaryColor
-import com.hello.ebookreader.ui.theme.TextSecondaryColor
+import com.hello.ebookreader.ui.theme.AppColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,7 +78,7 @@ fun BooksByCategory(
                 title = {
                     Text(
                         text = category,
-                        color = OnPrimaryColor,
+                        color = AppColors.OnPrimaryColor,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -101,7 +89,7 @@ fun BooksByCategory(
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = OnPrimaryColor
+                            tint = AppColors.OnPrimaryColor
                         )
                     }
                 },
@@ -110,11 +98,11 @@ fun BooksByCategory(
                         Icon(
                             Icons.Default.FilterList,
                             contentDescription = "Filter",
-                            tint = OnPrimaryColor
+                            tint = AppColors.OnPrimaryColor
                         )
                     }
                 },
-                colors = topAppBarColors(containerColor = PrimaryColor),
+                colors = topAppBarColors(containerColor = AppColors.PrimaryColor),
                 modifier = Modifier.shadow(elevation = 8.dp)
             )
         }
@@ -123,7 +111,7 @@ fun BooksByCategory(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(BackgroundColor)
+                .background(AppColors.BackgroundColor)
         ) {
             SearchBar(
                 query = searchQuery,
@@ -140,9 +128,7 @@ fun BooksByCategory(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        CircularProgressIndicator(
-                            color = PrimaryColor
-                        )
+                        ShimmerLoading()
                     }
                 }
                 res.error.isNotEmpty() -> ErrorMessage(res.error)
@@ -173,17 +159,17 @@ fun SearchBar(
             .fillMaxWidth()
             .heightIn(min = 56.dp)
             .clip(RoundedCornerShape(28.dp))
-            .background(SurfaceColor),
-        textStyle = TextStyle(color = TextPrimaryColor, fontSize = 16.sp),
+            .background(AppColors.SurfaceColor),
+        textStyle = TextStyle(color = AppColors.TextPrimaryColor, fontSize = 16.sp),
         placeholder = {
-            Text("Search books...", color = TextSecondaryColor)
+            Text("Search books...", color = AppColors.TextSecondaryColor)
         },
         leadingIcon = {
             Icon(
                 Icons.Default.Search,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
-                tint = PrimaryColor
+                tint = AppColors.PrimaryColor
             )
         },
         trailingIcon = {
@@ -192,17 +178,17 @@ fun SearchBar(
                     Icon(
                         Icons.Default.Clear,
                         contentDescription = "Clear",
-                        tint = TextSecondaryColor
+                        tint = AppColors.TextSecondaryColor
                     )
                 }
             }
         },
         singleLine = true,
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = SurfaceColor,
-            unfocusedContainerColor = SurfaceColor,
-            disabledContainerColor = SurfaceColor,
-            cursorColor = PrimaryColor,
+            focusedContainerColor = AppColors.SurfaceColor,
+            unfocusedContainerColor = AppColors.SurfaceColor,
+            disabledContainerColor = AppColors.SurfaceColor,
+            cursorColor = AppColors.PrimaryColor,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         )
@@ -225,13 +211,7 @@ fun BookListCategory(bookModels: List<BookModel>, navController: NavController) 
                             bookName = book.bookName
                         )
                     )
-                },
-                modifier = Modifier.animateItem(
-                    fadeInSpec = null, fadeOutSpec = null, placementSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                )
+                }
             )
         }
     }
@@ -245,7 +225,7 @@ fun BookItemCategory(bookModel: BookModel, onBookClick: () -> Unit, modifier: Mo
             .clickable(onClick = onBookClick),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = SurfaceColor)
+        colors = CardDefaults.cardColors(containerColor = AppColors.SurfaceColor)
     ) {
         Row(
             modifier = Modifier
@@ -254,8 +234,7 @@ fun BookItemCategory(bookModel: BookModel, onBookClick: () -> Unit, modifier: Mo
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AsyncImage(
-                model = "https://m.media-amazon.com/images/I/31RW8HQ31WL._SY445_SX342_.jpg"
-                    ?: Icons.Default.Book,
+                model = bookModel.imageUrl,
                 contentDescription = "Book cover",
                 modifier = Modifier
                     .size(120.dp)
@@ -270,27 +249,27 @@ fun BookItemCategory(bookModel: BookModel, onBookClick: () -> Unit, modifier: Mo
                     text = bookModel.bookName,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = TextPrimaryColor,
+                    color = AppColors.TextPrimaryColor,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = bookModel.category,
                     fontSize = 14.sp,
-                    color = TextSecondaryColor
+                    color = AppColors.TextSecondaryColor
                 )
                 LinearProgressIndicator(
                     progress = {
                         0.3f // Replace with actual reading progress
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    color = AccentColor1,
+                    color = AppColors.AccentColor1,
                     trackColor = Color.LightGray,
                 )
                 Text(
                     text = "30% Read", // Replace with actual percentage
                     fontSize = 12.sp,
-                    color = TextSecondaryColor
+                    color = AppColors.TextSecondaryColor
                 )
             }
         }

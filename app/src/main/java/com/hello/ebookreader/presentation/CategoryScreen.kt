@@ -42,9 +42,7 @@ import coil.compose.AsyncImage
 import com.hello.ebookreader.common.BookCategoryModel
 import com.hello.ebookreader.presentation.navigation.NavigationItem
 import com.hello.ebookreader.presentation.viewmodel.ViewModel
-import com.hello.ebookreader.ui.theme.BackgroundColor
-import com.hello.ebookreader.ui.theme.PrimaryColor
-import com.hello.ebookreader.ui.theme.TextPrimaryColor
+import com.hello.ebookreader.ui.theme.AppColors
 
 @Composable
 fun CategoryScreen(viewModel: ViewModel = hiltViewModel(), navController: NavController) {
@@ -57,7 +55,7 @@ fun CategoryScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
-                    color = PrimaryColor,
+                    color = AppColors.PrimaryColor,
                     modifier = Modifier.size(64.dp)
                 )
             }
@@ -70,7 +68,7 @@ fun CategoryScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(BackgroundColor)
+                    .background(AppColors.BackgroundColor)
             ) {
                 Column(
                     modifier = Modifier
@@ -80,7 +78,7 @@ fun CategoryScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
                     Text(
                         text = "Explore Categories",
                         style = MaterialTheme.typography.headlineLarge,
-                        color = TextPrimaryColor,
+                        color = AppColors.TextPrimaryColor,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
@@ -137,8 +135,8 @@ fun CategoryItem(category: BookCategoryModel, onClick: () -> Unit) {
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    PrimaryColor.copy(alpha = 0.3f),
-                                    PrimaryColor.copy(alpha = 0.7f)
+                                    AppColors.PrimaryColor.copy(alpha = 0.3f),
+                                    AppColors.PrimaryColor.copy(alpha = 0.7f)
                                 )
                             )
                         )

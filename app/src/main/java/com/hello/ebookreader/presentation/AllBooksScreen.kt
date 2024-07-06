@@ -1,5 +1,6 @@
 package com.hello.ebookreader.presentation
 
+import ShimmerLoading
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,13 +51,8 @@ import coil.request.ImageRequest
 import com.hello.ebookreader.common.BookModel
 import com.hello.ebookreader.presentation.navigation.NavigationItem
 import com.hello.ebookreader.presentation.viewmodel.ViewModel
-import com.hello.ebookreader.ui.theme.AccentColor1
-import com.hello.ebookreader.ui.theme.ErrorColor
-import com.hello.ebookreader.ui.theme.OnPrimaryColor
-import com.hello.ebookreader.ui.theme.PrimaryColor
-import com.hello.ebookreader.ui.theme.SurfaceColor
-import com.hello.ebookreader.ui.theme.TextPrimaryColor
-import com.hello.ebookreader.ui.theme.TextSecondaryColor
+import com.hello.ebookreader.ui.theme.AppColors
+import com.hello.ebookreader.ui.theme.LightColors.PrimaryColor
 
 @Composable
 fun AllBooksScreen(viewModel: ViewModel = hiltViewModel(), navController: NavController) {
@@ -66,8 +62,8 @@ fun AllBooksScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate(NavigationItem.AddBookScreen) },
-                containerColor = PrimaryColor,
-                contentColor = OnPrimaryColor
+                containerColor = AppColors.PrimaryColor,
+                contentColor = AppColors.OnPrimaryColor
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Book")
             }
@@ -77,7 +73,7 @@ fun AllBooksScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .background(SurfaceColor)
+                .background(AppColors.SurfaceColor)
                 .padding()
         ) {
             when {
@@ -87,9 +83,10 @@ fun AllBooksScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        CircularProgressIndicator(
-                            color = PrimaryColor
-                        )
+//                        CircularProgressIndicator(
+//                            color = PrimaryColor
+//                        )
+                        ShimmerLoading()
                     }
                 }
 
@@ -144,7 +141,7 @@ fun BookItem(book: BookModel, onBookClick: () -> Unit, modifier: Modifier = Modi
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .background(SurfaceColor)
+                .background(AppColors.SurfaceColor)
         ) {
             BookCover(
                 imageUrl = book.imageUrl,
@@ -163,26 +160,26 @@ fun BookItem(book: BookModel, onBookClick: () -> Unit, modifier: Modifier = Modi
                         text = book.bookName,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
-                        color = TextPrimaryColor,
+                        color = AppColors.TextPrimaryColor,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = book.category,
                         fontSize = 16.sp,
-                        color = TextSecondaryColor
+                        color = AppColors.TextSecondaryColor
                     )
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
                         text = "Reading Progress",
                         fontSize = 14.sp,
-                        color = TextSecondaryColor
+                        color = AppColors.TextSecondaryColor
                     )
                     LinearProgressIndicator(
                         progress = { 0.3f }, // Replace with actual reading progress
                         modifier = Modifier.fillMaxWidth(),
-                        color = AccentColor1,
+                        color = AppColors.AccentColor1,
                         trackColor = Color.LightGray,
                     )
                 }
@@ -211,7 +208,7 @@ fun BookCover(imageUrl: String?, modifier: Modifier = Modifier) {
                             .background(Color.LightGray),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(color = AccentColor1)
+                        CircularProgressIndicator(color = AppColors.AccentColor1)
                     }
                 }
                 is AsyncImagePainter.State.Error -> {
@@ -260,7 +257,7 @@ fun ErrorMessage(error: String) {
     ) {
         Text(
             text = error,
-            color = ErrorColor,
+            color = AppColors.ErrorColor,
             fontSize = 16.sp,
             textAlign = TextAlign.Center
         )

@@ -42,13 +42,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.hello.ebookreader.ui.theme.AccentColor1
-import com.hello.ebookreader.ui.theme.BackgroundColor
+import com.hello.ebookreader.ui.theme.AppColors
 import com.hello.ebookreader.ui.theme.NightModeBackground
 import com.hello.ebookreader.ui.theme.NightModeText
-import com.hello.ebookreader.ui.theme.OnPrimaryColor
-import com.hello.ebookreader.ui.theme.PrimaryColor
-import com.hello.ebookreader.ui.theme.TextPrimaryColor
 import com.rizzi.bouquet.ResourceType
 import com.rizzi.bouquet.VerticalPDFReader
 import com.rizzi.bouquet.rememberVerticalPdfReaderState
@@ -57,12 +53,13 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
-    val pdfState = rememberVerticalPdfReaderState(
+    var pdfState = rememberVerticalPdfReaderState(
         resource = ResourceType.Remote(url),
         isZoomEnable = true,
     )
     var showControls by remember { mutableStateOf(true) }
     var isNightMode by remember { mutableStateOf(false) }
+
 
     Scaffold(
         topBar = {
@@ -75,14 +72,14 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
                     title = {
                         Text(
                             text = bookName,
-                            color = OnPrimaryColor,
+                            color = AppColors.OnPrimaryColor,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                     },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = OnPrimaryColor)
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = AppColors.OnPrimaryColor)
                         }
                     },
                     actions = {
@@ -90,11 +87,11 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
                             Icon(
                                 if (isNightMode) Icons.Default.LightMode else Icons.Default.DarkMode,
                                 contentDescription = "Toggle Night Mode",
-                                tint = OnPrimaryColor
+                                tint = AppColors.OnPrimaryColor
                             )
                         }
                     },
-                    colors = topAppBarColors(containerColor = PrimaryColor)
+                    colors = topAppBarColors(containerColor = AppColors.PrimaryColor)
                 )
             }
         }
@@ -103,11 +100,11 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(if (isNightMode) NightModeBackground else BackgroundColor)
+                .background(if (isNightMode) NightModeBackground else AppColors.BackgroundColor)
         ) {
             VerticalPDFReader(
                 state = pdfState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
 
             // Loading indicator
@@ -116,7 +113,7 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = PrimaryColor)
+                    CircularProgressIndicator(color = AppColors.PrimaryColor)
                 }
             }
 
@@ -145,12 +142,12 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
                         Icon(
                             Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = "Previous Page",
-                            tint = if (isNightMode) NightModeText else TextPrimaryColor
+                            tint = if (isNightMode) NightModeText else AppColors.TextPrimaryColor
                         )
                     }
                     Text(
                         text = "Page ${pdfState.currentPage + 1} of ${pdfState.pdfPageCount}",
-                        color = if (isNightMode) NightModeText else TextPrimaryColor,
+                        color = if (isNightMode) NightModeText else AppColors.TextPrimaryColor,
                         style = MaterialTheme.typography.bodyMedium
                     )
                     IconButton(
@@ -162,7 +159,7 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
                         Icon(
                             Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             contentDescription = "Next Page",
-                            tint = if (isNightMode) NightModeText else TextPrimaryColor
+                            tint = if (isNightMode) NightModeText else AppColors.TextPrimaryColor
                         )
                     }
                 }
@@ -175,7 +172,7 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
                     .fillMaxWidth()
                     .height(4.dp)
                     .align(Alignment.TopCenter),
-                color = AccentColor1,
+                color = AppColors.AccentColor1,
                 trackColor = Color.Transparent,
             )
         }
