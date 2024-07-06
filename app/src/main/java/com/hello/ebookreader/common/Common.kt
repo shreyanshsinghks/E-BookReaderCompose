@@ -13,8 +13,10 @@ data class BookModel(
     val bookUrl: String = "",
     val bookName: String = "",
     val category: String = "",
+    val imageUrl: String = "",
 )
 
 data class BookCategoryModel(
     val name: String = "",
+    val imageUrl: String = ""
 )

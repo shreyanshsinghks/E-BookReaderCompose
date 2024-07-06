@@ -1,20 +1,21 @@
 package com.hello.ebookreader.presentation
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -29,12 +30,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,9 +43,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
+import coil.request.ImageRequest
 import com.hello.ebookreader.common.BookModel
-import com.hello.ebookreader.data.repo.AllBookRepoImpl
 import com.hello.ebookreader.presentation.navigation.NavigationItem
 import com.hello.ebookreader.presentation.viewmodel.ViewModel
 import com.hello.ebookreader.ui.theme.AccentColor1
@@ -70,10 +73,12 @@ fun AllBooksScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
             }
         }
     ) { innerPadding ->
+        innerPadding
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .background(SurfaceColor)
+                .padding()
         ) {
             when {
                 res.isLoading -> {
@@ -101,14 +106,15 @@ fun AllBooksScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
 
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BookList(books: List<BookModel>, navController: NavController) {
-    LazyColumn(
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Adaptive(minSize = 300.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalItemSpacing = 16.dp,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        itemsIndexed(books) { index, book ->
+        items(books) { book ->
             BookItem(
                 book = book,
                 onBookClick = {
@@ -119,12 +125,7 @@ fun BookList(books: List<BookModel>, navController: NavController) {
                         )
                     )
                 },
-                modifier = Modifier.animateItem(
-                    fadeInSpec = null, fadeOutSpec = null, placementSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                )
+
             )
         }
     }
@@ -135,54 +136,121 @@ fun BookItem(book: BookModel, onBookClick: () -> Unit, modifier: Modifier = Modi
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .height(200.dp)
             .clickable(onClick = onBookClick),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                .fillMaxSize()
+                .background(SurfaceColor)
         ) {
-            AsyncImage(
-                model = "https://m.media-amazon.com/images/I/31RW8HQ31WL._SY445_SX342_.jpg"
-                    ?: Icons.Default.Book,
-                contentDescription = "Book cover",
+            BookCover(
+                imageUrl = book.imageUrl,
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
+                    .fillMaxHeight()
+                    .weight(0.4f)
             )
             Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier
+                    .weight(0.6f)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = book.bookName,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = TextPrimaryColor,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = book.category,
-                    fontSize = 14.sp,
-                    color = TextSecondaryColor
-                )
-                LinearProgressIndicator(
-                    progress = {
-                        0.3f // Replace with actual reading progress
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    color = AccentColor1,
-                    trackColor = Color.LightGray,
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = book.bookName,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = TextPrimaryColor,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = book.category,
+                        fontSize = 16.sp,
+                        color = TextSecondaryColor
+                    )
+                }
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = "Reading Progress",
+                        fontSize = 14.sp,
+                        color = TextSecondaryColor
+                    )
+                    LinearProgressIndicator(
+                        progress = { 0.3f }, // Replace with actual reading progress
+                        modifier = Modifier.fillMaxWidth(),
+                        color = AccentColor1,
+                        trackColor = Color.LightGray,
+                    )
+                }
             }
         }
     }
 }
+
+@Composable
+fun BookCover(imageUrl: String?, modifier: Modifier = Modifier) {
+    Box(modifier = modifier) {
+        SubcomposeAsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl ?: "https://m.media-amazon.com/images/I/31RW8HQ31WL._SY445_SX342_.jpg")
+                .crossfade(true)
+                .build(),
+            contentDescription = "Book cover",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            when (painter.state) {
+                is AsyncImagePainter.State.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = AccentColor1)
+                    }
+                }
+                is AsyncImagePainter.State.Error -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Gray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Book,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(60.dp)
+                        )
+                    }
+                }
+                else -> {
+                    SubcomposeAsyncImageContent()
+                }
+            }
+        }
+        // Add a subtle gradient overlay
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.3f),
+                            Color.Transparent
+                        )
+                    )
+                )
+        )
+    }
+}
+
+
 
 @Composable
 fun ErrorMessage(error: String) {
@@ -198,5 +266,3 @@ fun ErrorMessage(error: String) {
         )
     }
 }
-
-
