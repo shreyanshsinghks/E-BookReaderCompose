@@ -10,6 +10,9 @@ import com.hello.ebookreader.common.BookModel
 import com.hello.ebookreader.common.ResultState
 import com.hello.ebookreader.domain.repository.AllBookRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -72,6 +75,25 @@ class ViewModel @Inject constructor(val repo: AllBookRepo): ViewModel() {
                     }
                     is ResultState.Success -> {
                         _state.value = _state.value.copy(categoryItems = result.data, isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+
+    fun addBook(bookUrl: String, bookName: String, category: String) {
+        viewModelScope.launch {
+            repo.addBook(bookUrl = bookUrl , bookName = bookName, category = category).collect { result ->
+                when (result) {
+                    is ResultState.Error -> {
+                        _state.value = _state.value.copy(error = result.exception.message.toString(), isLoading = false)
+                    }
+                    ResultState.Loading -> {
+                        _state.value = _state.value.copy(isLoading = true)
+                    }
+                    is ResultState.Success -> {
+                        _state.value = _state.value.copy(isLoading = false)
                     }
                 }
             }

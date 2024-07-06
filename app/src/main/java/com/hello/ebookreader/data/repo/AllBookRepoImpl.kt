@@ -12,10 +12,11 @@ import com.hello.ebookreader.domain.repository.AllBookRepo
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AllBookRepoImpl @Inject constructor(val firebaseDatabase: FirebaseDatabase) : AllBookRepo {
-    override fun getAllBooks(): Flow<ResultState<List<BookModel>>> = callbackFlow {
+    override suspend fun getAllBooks(): Flow<ResultState<List<BookModel>>> = callbackFlow {
         trySend(ResultState.Loading)
         val valueEvent = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -37,7 +38,7 @@ class AllBookRepoImpl @Inject constructor(val firebaseDatabase: FirebaseDatabase
         }
     }
 
-    override fun getAllCategory(): Flow<ResultState<List<BookCategoryModel>>> = callbackFlow {
+    override suspend fun getAllCategory(): Flow<ResultState<List<BookCategoryModel>>> = callbackFlow {
         trySend(ResultState.Loading)
         val valueEvent = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -58,7 +59,7 @@ class AllBookRepoImpl @Inject constructor(val firebaseDatabase: FirebaseDatabase
         }
     }
 
-    override fun getAllBooksByCategory(category: String): Flow<ResultState<List<BookModel>>> = callbackFlow {
+    override suspend fun getAllBooksByCategory(category: String): Flow<ResultState<List<BookModel>>> = callbackFlow {
         trySend(ResultState.Loading)
         val valueEvent = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -80,6 +81,25 @@ class AllBookRepoImpl @Inject constructor(val firebaseDatabase: FirebaseDatabase
             firebaseDatabase.reference.removeEventListener(valueEvent)
             close()
         }
+    }
+
+
+
+    override suspend fun addBook(bookUrl: String, bookName: String, category: String): Flow<ResultState<Unit>> = callbackFlow {
+        trySend(ResultState.Loading)
+
+        val reference = firebaseDatabase.reference.child("Books").push()
+
+        reference.setValue(BookModel(bookName = bookName, bookUrl = bookUrl, category = category)).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                trySend(ResultState.Success(Unit))
+            } else {
+                trySend(ResultState.Error(task.exception ?: Exception("Unknown error occurred")))
+            }
+            close()
+        }
+
+        awaitClose()
     }
 
 }

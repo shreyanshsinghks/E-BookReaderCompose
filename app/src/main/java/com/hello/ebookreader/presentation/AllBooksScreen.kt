@@ -17,13 +17,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,11 +44,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.hello.ebookreader.common.BookModel
+import com.hello.ebookreader.data.repo.AllBookRepoImpl
 import com.hello.ebookreader.presentation.navigation.NavigationItem
 import com.hello.ebookreader.presentation.viewmodel.ViewModel
 import com.hello.ebookreader.ui.theme.AccentColor1
 import com.hello.ebookreader.ui.theme.ErrorColor
+import com.hello.ebookreader.ui.theme.OnPrimaryColor
 import com.hello.ebookreader.ui.theme.PrimaryColor
+import com.hello.ebookreader.ui.theme.SurfaceColor
 import com.hello.ebookreader.ui.theme.TextPrimaryColor
 import com.hello.ebookreader.ui.theme.TextSecondaryColor
 
@@ -50,22 +59,46 @@ import com.hello.ebookreader.ui.theme.TextSecondaryColor
 fun AllBooksScreen(viewModel: ViewModel = hiltViewModel(), navController: NavController) {
     val res = viewModel.state.value
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        when {
-            res.isLoading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = PrimaryColor
-                )
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate(NavigationItem.AddBookScreen) },
+                containerColor = PrimaryColor,
+                contentColor = OnPrimaryColor
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Book")
             }
-            res.error.isNotEmpty() -> {
-                ErrorMessage(error = res.error)
-            }
-            res.items.isNotEmpty() -> {
-                BookList(books = res.items, navController = navController)
+        }
+    ) { innerPadding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            when {
+                res.isLoading -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator(
+                            color = PrimaryColor
+                        )
+                    }
+                }
+
+                res.error.isNotEmpty() -> {
+                    ErrorMessage(error = res.error)
+                }
+
+                res.items.isNotEmpty() -> {
+                    BookList(books = res.items, navController = navController)
+                }
             }
         }
     }
+
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -79,7 +112,12 @@ fun BookList(books: List<BookModel>, navController: NavController) {
             BookItem(
                 book = book,
                 onBookClick = {
-                    navController.navigate(NavigationItem.ShowPdfScreen(url = book.bookUrl, bookName = book.bookName))
+                    navController.navigate(
+                        NavigationItem.ShowPdfScreen(
+                            url = book.bookUrl,
+                            bookName = book.bookName
+                        )
+                    )
                 },
                 modifier = Modifier.animateItem(
                     fadeInSpec = null, fadeOutSpec = null, placementSpec = spring(
@@ -108,7 +146,8 @@ fun BookItem(book: BookModel, onBookClick: () -> Unit, modifier: Modifier = Modi
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AsyncImage(
-                model = "https://m.media-amazon.com/images/I/31RW8HQ31WL._SY445_SX342_.jpg" ?: Icons.Default.Book,
+                model = "https://m.media-amazon.com/images/I/31RW8HQ31WL._SY445_SX342_.jpg"
+                    ?: Icons.Default.Book,
                 contentDescription = "Book cover",
                 modifier = Modifier
                     .size(100.dp)

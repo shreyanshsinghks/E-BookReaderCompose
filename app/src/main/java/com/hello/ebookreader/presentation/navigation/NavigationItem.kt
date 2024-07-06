@@ -14,4 +14,6 @@ sealed class NavigationItem {
     @Serializable
     data class ShowPdfScreen(val url: String, val bookName: String)
 
+    @Serializable
+    object AddBookScreen
 }
