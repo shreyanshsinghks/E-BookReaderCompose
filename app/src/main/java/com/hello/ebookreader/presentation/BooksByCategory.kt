@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.hello.ebookreader.presentation.navigation.NavigationItem
 import com.hello.ebookreader.presentation.viewmodel.ViewModel
 
 @Composable
@@ -32,9 +33,7 @@ fun BooksByCategory(
     val realCategory = remember {
         mutableStateOf(category)
     }
-//    LaunchedEffect(realCategory) {
-//        viewModel.loadBooksByCategory(realCategory.value)
-//    }
+
     val res = viewModel.state.value
     DisposableEffect(category) {
         viewModel.loadBooksByCategory(category)
@@ -63,7 +62,9 @@ fun BooksByCategory(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { },
+                                .clickable {
+                                    navController.navigate(NavigationItem.ShowPdfScreen(it.bookUrl))
+                                },
                             shape = RoundedCornerShape(10.dp)
                         ) {
                             Column {

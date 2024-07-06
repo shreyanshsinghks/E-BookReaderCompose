@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.hello.ebookreader.presentation.BooksByCategory
+import com.hello.ebookreader.presentation.ShowPdfScreen
 import com.hello.ebookreader.presentation.TabLayout
 
 
@@ -19,6 +20,11 @@ fun NavGraphHost(navController: NavHostController) {
         composable<NavigationItem.BooksByCategory> {
             val category = it.toRoute<NavigationItem.BooksByCategory>()
             BooksByCategory(category = category.category, navController = navController)
+        }
+
+        composable<NavigationItem.ShowPdfScreen> {
+            val res = it.toRoute<NavigationItem.ShowPdfScreen>()
+            ShowPdfScreen(url = res.url)
         }
     }
 }

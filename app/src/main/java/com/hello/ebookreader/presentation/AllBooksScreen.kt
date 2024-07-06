@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.hello.ebookreader.presentation.navigation.NavigationItem
 import com.hello.ebookreader.presentation.viewmodel.ViewModel
 
 @Composable
@@ -47,7 +48,9 @@ fun AllBooksScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { },
+                                .clickable {
+                                    navController.navigate(NavigationItem.ShowPdfScreen(it.bookUrl))
+                                },
                             shape = RoundedCornerShape(10.dp)
                         ) {
                             Column {
