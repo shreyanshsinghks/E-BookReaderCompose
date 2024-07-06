@@ -12,6 +12,6 @@ sealed class NavigationItem {
     data class BooksByCategory(val category: String)
 
     @Serializable
-    data class ShowPdfScreen(val url: String)
+    data class ShowPdfScreen(val url: String, val bookName: String)
 
 }
