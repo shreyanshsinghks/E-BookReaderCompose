@@ -107,6 +107,7 @@ fun BooksByCategory(
             )
         }
     ) { paddingValues ->
+        paddingValues
         Column(
             modifier = Modifier
                 .fillMaxSize()

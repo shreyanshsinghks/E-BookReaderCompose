@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -75,14 +76,6 @@ fun CategoryScreen(viewModel: ViewModel = hiltViewModel(), navController: NavCon
                         .fillMaxSize()
                         .padding(16.dp)
                 ) {
-                    Text(
-                        text = "Explore Categories",
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = AppColors.TextPrimaryColor,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 24.dp)
-                    )
-
                     CategoryGrid(categories = bookCategory.category, navController = navController)
                 }
             }
@@ -97,6 +90,18 @@ fun CategoryGrid(categories: List<BookCategoryModel>, navController: NavControll
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
+
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Text(
+                text = "Explore Categories",
+                style = MaterialTheme.typography.headlineLarge,
+                color = AppColors.TextPrimaryColor,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp),
+                fontSize = 36.sp
+            )
+        }
+
         items(categories) { category ->
             CategoryItem(category = category) {
                 navController.navigate(NavigationItem.BooksByCategory(category.name))

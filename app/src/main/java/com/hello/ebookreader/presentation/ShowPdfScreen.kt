@@ -96,10 +96,11 @@ fun ShowPdfScreen(url: String, bookName: String, navController: NavController) {
             }
         }
     ) { paddingValues ->
+        paddingValues
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+//                .padding(paddingValues)
                 .background(if (isNightMode) NightModeBackground else AppColors.BackgroundColor)
         ) {
             VerticalPDFReader(
